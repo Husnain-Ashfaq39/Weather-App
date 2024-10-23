@@ -1,87 +1,278 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Load Chart.js -->
-    <title>Weather Dashboard</title>
-    <link rel="stylesheet" href="/styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weather Dashboard & Tables</title>
+  <link href="assets/tailwind.css" rel="stylesheet">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="icon" href="icons/favicon.svg" type="image/svg+xml">
+
+
+
+  <link rel="stylesheet" href="style.css">
 </head>
-<body>
+
+<body class="overflow-hidden text-gray-900 bg-gradient-to-r from-blue-100 via-white to-blue-200">
+  <div class="flex h-screen">
     <!-- Sidebar -->
-    <div class="sidebar">
-        <nav>
-            <ul>
-                <li><a href="#" id="dashboard-btn">Dashboard</a></li>
-                <li><a href="/Assets/table.html" id="tables-btn">Tables</a></li>
-            </ul>
-        </nav>
-    </div>
 
-    <!-- Main content -->
-    <div class="main-content">
-        <!-- Header -->
-        <header>
-            <h1>Weather App</h1>
-        </header>
+    <!-- Sidebar -->
+    <aside id="sidebar"
+      class="absolute md:fixed z-50 hidden md:block h-screen p-5 text-white transition-all duration-300 ease-in-out shadow-xl w-64 bg-gradient-to-b from-sky-400 via-blue-500 to-indigo-600 rounded-lg transform translate-x-0">
+      <div class="flex items-center justify-between">
+        <h1 class="p-3 mb-3 text-2xl font-bold text-white drop-shadow-lg">Weather</h1>
+        <img id="cross-btn"
+          class="invert -mt-3 block md:hidden w-4 h-4 cursor-pointer hover:scale-110 transition-transform duration-300"
+          src="assets/cross.svg" alt="Close">
+      </div>
+      <nav>
+        <ul>
+          <li class="mb-4">
+            <a href="#dashboard"
+              class="flex items-center space-x-3 p-3 transition-all duration-200 ease-in-out transform border border-transparent rounded-lg hover:text-gray-200 hover:border-white hover:bg-white/10 hover:scale-105 text-lg">
+              <i class="fas fa-tachometer-alt text-xl"></i>
+              <span class="text-lg font-semibold">Dashboard</span>
+            </a>
+          </li>
+          <li>
+            <a href="#tables"
+              class="flex items-center space-x-3 p-3 transition-all duration-200 ease-in-out transform border border-transparent rounded-lg hover:text-gray-200 hover:border-white hover:bg-white/10 hover:scale-105 text-lg">
+              <i class="fas fa-table text-xl"></i>
+              <span class="text-lg font-semibold">Forcast</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </aside>
 
-        <!-- Search Bar -->
-        <div class="search-bar">
-            <input type="text" id="city-input" placeholder="Enter City Name">
-            <button id="search-btn">Search</button>
+    <!-- Hamburger Menu for Small Screens -->
+    <button id="hamburger"
+      class="z-50 fixed p-3 top-4 left-4 md:hidden bg-white rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300">
+      <div class="w-6 h-0.5 bg-black mb-1"></div>
+      <div class="w-6 h-0.5 bg-black mb-1"></div>
+      <div class="w-6 h-0.5 bg-black"></div>
+    </button>
+
+
+
+    <div id="spinner" class="spinner" style="display: none;" ></div>
+
+    <!-- Main Content -->
+    <div id='main-content' 
+      class=" flex-1 p-6 ml-0 sm:ml-14 overflow-y-auto transition-all duration-300 ease-in-out md:ml-64 lg:ml-72">
+
+
+
+      <section id="dashboard" class="relative  p-4 mx-auto mb-12 h-auto rounded-lg shadow-xl md:p-6 lg:p-8">
+
+
+        <img class="house" src="images/House.png" alt="">
+
+
+
+
+
+
+        <div class="flex flex-col items-center justify-center mb-6 space-y-4 sm:flex-row sm:space-y-0 sm:space-x-4">
+          <input id="cityInput" type="text" placeholder="Enter city"
+            class="w-1/2 p-3 placeholder-gray-300 transition bg-transparent border-b-2 border-gray-100 focus:border-blue-500 focus:outline-none">
+          <button id="getWeather" class="p-3 text-white transition bg-blue-500 rounded-lg shadow-lg hover:bg-blue-600">
+            Get Weather
+          </button>
         </div>
 
-        <!-- Weather Data Section -->
-        <section class="weather-data">
-            <div class="weather-icon">
-                <img id="weather-icon" src="./weather.png" alt="Weather Icon">
-            </div>
-            <h2>Weather Data for <span id="city-name">[City]</span></h2>
-            <p id="weather-description">[Weather description]</p>
-            <div class="weather-details">
-                <p>Temperature: <span id="temperature">[Temp]</span> °C</p>
-                <p>Humidity: <span id="humidity">[Humidity]</span> %</p>
-                <p>Wind Speed: <span id="wind-speed">[Wind Speed]</span> m/s</p>
-            </div>
-        </section>
-        
 
-       
-        <!-- Charts Section -->
-        <section class="charts">
-            <div class="chart" id="bar-chart-container">
-                <h3>Vertical Bar Chart</h3>
-                <canvas id="barChart"></canvas>
-            </div>
-            <div class="chart" id="doughnut-chart-container">
-                <h3>Doughnut Chart</h3>
-                <canvas id="doughnutChart"></canvas>
-            </div>
-            <div class="chart" id="line-chart-container">
-                <h3>Line Chart</h3>
-                <canvas id="lineChart"></canvas>
-            </div>
-        </section>
 
-        <!-- AI Chatbot Section -->
-        <section class="chatbot-section">
-            <h2>Gemini AI Assistant</h2>
-            <p>Need help or have questions? Ask Gemini, our intelligent chatbot!</p>
+        <!-- Weather Widget -->
+        <div id="weatherWidget"
+          class=" relative flex flex-col gap-10 mt-10 items-start justify-start w-full p-4 mx-auto mb-6 text-gray-800 transition-all bg-transparent  sm:max-w-lg lg:max-w-4xl ">
+          <!-- This is the place where i  place image below are the links  -->
 
-            <div class="chat-container">
-                <div class="chat-window" id="chatWindow"></div>
 
-                <div class="input-container">
-                    <input type="text" id="userInput" placeholder="Ask something..." autocomplete="off">
-                    <button id="sendButton">Send</button>
+          <div class="flex flex-col z-10">
+            <!-- Main Weather Info -->
+            <div class="flex flex-col items-center w-full text-white ">
+              <div class="flex flex-row md:justify-around justify-start  ">
+                <h2 class="mb-2 text-xl font-bold text-white sm:text-2xl lg:text-3xl" id="cityName">Tehran, Iran</h2>
+
+                <!-- Toggle for Celsius and Fahrenheit -->
+                <div class="flex justify-around md:absolute md:top-10 md:right-10 ">
+
+                  <label class="relative cursor-pointer">
+                    <input type="checkbox" id="tempToggle" class="sr-only peer">
+                    <div
+                      class="w-12 h-6 bg-[#5c37d4] rounded-full transition-all peer-checked:bg-[#dd44a6] after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-[118%]">
+                      <div class="flex items-center justify-around text-white">
+                        <span>°F</span> <span class="mr-1">°C</span>
+                      </div>
+                    </div>
+                  </label>
+
+
                 </div>
-            </div>
-        </section>
-    </div>
+              </div>
 
-    <!-- Load JavaScript files -->
-    <script src="/JS/main.js"></script>
-    <script src="/JS/chart.js"></script>
-    <script src="/JS/chatbot.js"></script>
+
+
+              <p class="mb-2 text-base sm:text-lg" id="weatherDescription">Sunny</p>
+              <p class="text-sm sm:text-base"><strong>Location:</strong> <span id="location"></span></p>
+              <div class="mb-4 text-3xl font-bold text-white sm:text-4xl lg:text-6xl">
+                <span id="temperature">39</span>°<span id="tempUnit">C</span>
+              </div>
+            </div>
+
+
+          </div>
+
+
+
+
+          <div class="flex items-center justify-center w-full lg:mt-7">
+            <!-- Weather Details (Simplified Structure) -->
+            <div
+              class="grid items-end md:items-center gap-10 z-10 w-full grid-cols-2 grid-rows-1 gap-x-5 sm:grid-cols-2 sm:gap-4 lg:grid-cols-4 lg:gap-8 lg:max-w-lg">
+
+              <!-- Reusable Weather Detail Component -->
+              <div class="weather-detail">
+                <span>UV</span>
+                <img src="icons/uv-index.svg" alt="UV Icon" />
+                <p id="uv">300</p> 
+              </div>
+
+              <div class="weather-detail">
+                <span>Humidity</span>
+                <img src="icons/humidity.svg" alt="Humidity Icon" />
+                <p id="humidity">61%</p>
+              </div>
+
+              <div class="weather-detail">
+                <span>Wind Speed</span>
+                <img src="icons/wind.svg" alt="Wind Icon" />
+                <p id="windSpeed">13 km/h</p>
+              </div>
+
+              <div class="weather-detail">
+                <span>Feels Like</span>
+                <img src="icons/feelsLike.svg" alt="Feels Like Icon" />
+                <p id="feelsLike">38°C</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- Charts Section -->
+      <div class="grid w-full grid-cols-1 gap-6  xl:grid-cols-2 2xl:grid-cols-3 p-4 charts ">
+        <div class="w-full h-[270px] flex items-center justify-center p-4 bg-white rounded-lg shadow-lg ">
+          <div class="relative h-full">
+            <canvas id="barChart" class="h-full w-full  sm:w-1/2"></canvas>
+          </div>
+        </div>
+        <div class="w-full h-[270px] flex items-center justify-center p-4 bg-white rounded-lg shadow-lg">
+          <div class="relative h-full">
+            <canvas id="doughnutChart" class="h-full w-1/2"></canvas>
+          </div>
+        </div>
+        <div class="w-full h-[270px] flex items-center justify-center p-4 bg-white rounded-lg shadow-lg">
+          <div class="relative h-full">
+            <canvas id="lineChart" class="h-full w-1/2"></canvas>
+          </div>
+        </div>
+      </div>
+
+
+
+     <!-- Dropdown Menu for Filter/Sort Options -->
+<div class="mb-6 mt-6 flex flex-col justify-end items-end">
+  <label for="filterOptions" class="block mb-2 text-lg font-bold text-blue-700">Filter Options</label>
+  <select id="filterOptions"
+    class="w-1/3 p-3 transition-all duration-300 bg-gradient-to-r from-blue-400 to-blue-600 text-white border-none rounded-lg shadow-lg hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-blue-300">
+    <option value="" class="text-gray-700 bg-white">-- Select an option --</option>
+    <option value="ascTemp" class="text-gray-700 bg-white">Show temperatures in ascending order</option>
+    <option value="descTemp" class="text-gray-700 bg-white">Show temperatures in descending order</option>
+    <option value="rainOnly" class="text-gray-700 bg-white">Filter out days without rain</option>
+    <option value="highestTemp" class="text-gray-700 bg-white">Show the day with the highest temperature</option>
+  </select>
+</div>
+  
+
+
+
+
+      <!-- Weather Cards Section -->
+      <section id="tables" class="p-0 sm:p-8 h-auto rounded-lg shadow-lg bg-gradient-to-r from-[#242544] to-[#3d3f57] ">
+        <h2 class="mb-4 text-2xl text-white font-bold">Weather Forecast</h2>
+        <div id="weatherGrid"  class="grid grid-cols-1 gap-6  lg:grid-cols-2  2xl:grid-cols-3">
+          <!-- Weather Cards will be dynamically inserted here -->
+        </div>
+
+        <!-- Pagination Controls -->
+        <div class="flex justify-center mt-6">
+          <button id="prevPage"
+            class="px-4 py-2 mx-2 text-white transition bg-blue-500 rounded-lg shadow-lg disabled:bg-gray-400">Previous</button>
+          <span id="pageNumber" class="px-4 py-2 mx-2 text-white">Page 1</span>
+          <button id="nextPage"
+            class="px-4 py-2 mx-2 text-white disabled:bg-gray-400 transition bg-blue-500 rounded-lg shadow-lg">Next</button>
+        </div>
+      </section>
+
+      <div class="chatbot-icon" onclick="toggleChatbot()">
+        <img src="images/bot.webp" alt="Chatbot Icon">
+      </div>
+
+      <!-- Chatbot Icon -->
+      <div class="chatbot-icon" onclick="toggleChatbot()" style="z-index: 50;">
+        <img src="images/bot.webp" alt="Chatbot Icon">
+      </div>
+
+      <!-- Chatbot Window -->
+      <div class="chatbot-window">
+        <!-- Chatbot Header -->
+        <div class="chatbot-header">Ask WeatherBot</div>
+
+        <!-- Initial Centered Icon -->
+        <div class="chatbot-initial-icon">
+          <img src="images/bot.webp" alt="Bot Initial Icon">
+        </div>
+
+        <!-- Chatbot Body with Suggestions -->
+        <div class="chatbot-body" id="chatbotBody">
+          <!-- Suggestion Cards -->
+          <div class="suggestion-card" onclick="suggestionClick('What is the temperature now?')">
+            <img src="https://cdn-icons-png.flaticon.com/512/1163/1163661.png" alt="Weather Icon">
+            What is the weather today?
+          </div>
+          <div class="suggestion-card" onclick="suggestionClick('What is the wind speed now?')">
+            <img src="https://cdn-icons-png.flaticon.com/512/1581/1581943.png" alt="Wind Icon">
+            What is the wind speed today?
+          </div>
+
+          <!-- Chat Output -->
+          <div id="chatbotOutput"></div>
+        </div>
+
+        <!-- Input and Send Button -->
+        <div class="chat-input">
+          <input id="chatbotInput" type="text" placeholder="Ask me anything...">
+          <img src="icons/send.png" class="send-icon" id="sendMessage" alt="Send Icon">
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+
+  <script src="assets/script.js"></script>
+  <script src="assets/charts.js"></script>
+  <script src="assets/chatbot.js"></script>
+  <script src="assets/theme.js"></script>
+  <script src="assets/weatherQueries.js"></script>
 </body>
+
 </html>
